@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Movie Pick</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 72% 28%, rgba(192, 132, 252, 0.18), transparent 28%),
+        radial-gradient(circle at 18% 22%, rgba(245, 158, 11, 0.12), transparent 24%),
+        radial-gradient(circle at 45% 80%, rgba(236, 72, 153, 0.10), transparent 24%),
+        #070712;
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      padding: 28px 56px 56px;
+      position: relative;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.05;
+      background-image: linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 4px 4px;
+    }
+
+    nav {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.045);
+      backdrop-filter: blur(16px);
+      border-radius: 16px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .logo {
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #f5c16c;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      color: #d1d5db;
+      font-size: 14px;
+    }
+
+    .nav-button {
+      border: 1px solid rgba(245, 193, 108, 0.55);
+      background: rgba(245, 193, 108, 0.10);
+      color: #ffe7b5;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .hero {
+      max-width: 1120px;
+      margin: 90px auto 70px;
+      min-height: 560px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: center;
+      position: relative;
+    }
+
+    .eyebrow {
+      color: #a5b4fc;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 76px;
+      line-height: 0.95;
+      margin: 0;
+      letter-spacing: -4px;
+      max-width: 720px;
+    }
+
+    .highlight {
+      color: #c084fc;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      text-decoration: underline;
+      text-underline-offset: 8px;
+    }
+
+    .hero-text {
+      color: #d1d5db;
+      max-width: 520px;
+      line-height: 1.7;
+      margin: 24px 0 28px;
+      font-size: 16px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, #f59e0b, #c084fc);
+      color: #111111;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .secondary-btn {
+      background: rgba(255,255,255,0.05);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 15px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .visual {
+      position: relative;
+      height: 520px;
+    }
+
+    .poster {
+      width: 300px;
+      height: 430px;
+      border-radius: 26px;
+      overflow: hidden;
+      position: absolute;
+      right: 70px;
+      top: 30px;
+      transform: rotate(3deg);
+      box-shadow: 0 40px 90px rgba(0,0,0,0.72);
+      border: 1px solid rgba(255,255,255,0.16);
+      z-index: 2;
+    }
+
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(20%) contrast(112%) saturate(85%);
+    }
+
+    .orb {
+      position: absolute;
+      width: 330px;
+      height: 330px;
+      border-radius: 50%;
+      right: 35px;
+      top: 80px;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(245, 193, 108, 0.22), transparent 24%),
+        radial-gradient(circle, #1a1024, #05040a);
+      box-shadow:
+        0 0 90px rgba(192,132,252,0.22),
+        inset 0 0 70px rgba(255,255,255,0.07);
+      z-index: 1;
+    }
+
+    .ring {
+      position: absolute;
+      width: 480px;
+      height: 126px;
+      right: -18px;
+      top: 188px;
+      border: 2px solid rgba(245,158,11,0.65);
+      border-radius: 50%;
+      transform: rotate(-16deg);
+      filter: blur(0.2px);
+      z-index: 3;
+      box-shadow: 0 0 34px rgba(192,132,252,0.35);
+    }
+
+    .ticket {
+      position: absolute;
+      right: 260px;
+      bottom: 60px;
+      z-index: 4;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(14px);
+      border-radius: 16px;
+      padding: 14px 16px;
+      transform: rotate(-6deg);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+    }
+
+    .ticket-title {
+      color: #f5c16c;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .ticket-text {
+      color: white;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 24px;
+      margin-top: 44px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      color: #d1d5db;
+      font-size: 13px;
+    }
+
+    .stats strong {
+      color: white;
+      font-size: 18px;
+      margin-right: 6px;
+    }
+
+    .movie-section {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+
+    .section-header h2 {
+      font-size: 30px;
+      margin: 0;
+    }
+
+    .section-header p {
+      color: #9ca3af;
+      margin: 0;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: #d1d5db;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .filter-btn:hover {
+      border-color: rgba(192,132,252,0.6);
+      color: white;
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(135deg, #f59e0b, #c084fc);
+      color: #111111;
+      border-color: transparent;
+    }
+
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .movie-card {
+      background: rgba(255,255,255,0.065);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 16px;
+      backdrop-filter: blur(14px);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(192,132,252,0.55);
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      border-radius: 14px;
+      filter: grayscale(15%) saturate(90%);
+    }
+
+    .movie-card h3 {
+      margin: 14px 0 6px;
+      font-size: 20px;
+    }
+
+    .meta {
+      color: #f5c16c;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .desc {
+      color: #d1d5db;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .mood-tag {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #e9d5ff;
+      background: rgba(192,132,252,0.14);
+      border: 1px solid rgba(192,132,252,0.25);
+      font-size: 12px;
+    }
+
+    @media (max-width: 850px) {
+      .page {
+        padding: 20px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        margin-top: 50px;
+      }
+
+      h1 {
+        font-size: 52px;
+      }
+
+      .visual {
+        height: 440px;
+      }
+
+      .movie-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .ticket {
+        right: 180px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="noise"></div>
+
+  <div class="page">
+    <nav>
+      <div class="logo">MOOD REEL</div>
+      <div class="nav-links">
+        <span>Tonight</span>
+        <span>Moods</span>
+        <span>Watchlist</span>
+      </div>
+      <button class="nav-button">Explore</button>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">001 Midnight Film Club</div>
+
+        <h1>
+          Curated films for
+          <span class="highlight">your next</span>
+          mood.
+        </h1>
+
+        <p class="hero-text">
+          A moody movie recommendation experience designed to help you choose films by feeling, story, and visual style.
+        </p>
+
+        <div class="hero-actions">
+          <button class="primary-btn">Start exploring</button>
+          <button class="secondary-btn">View selected films</button>
+        </div>
+
+        <div class="stats">
+          <div><strong>9.1</strong>Top rating</div>
+          <div><strong>24</strong>Curated picks</div>
+          <div><strong>6</strong>Mood filters</div>
+        </div>
+      </div>
+
+      <div class="visual">
+        <div class="orb"></div>
+        <div class="ring"></div>
+
+        <div class="poster">
+          <img src="Images/inception-poster.jpg">
+        </div>
+
+        <div class="ticket">
+          <div class="ticket-title">Tonight's pick</div>
+          <div class="ticket-text">Dreamy Sci-Fi</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="movie-section">
+      <div class="section-header">
+        <div>
+          <h2>Selected films</h2>
+          <p>Curated picks for tonight.</p>
+        </div>
+      </div>
+
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterMovies('all', this)">All</button>
+        <button class="filter-btn" onclick="filterMovies('Dreamy', this)">Dreamy</button>
+        <button class="filter-btn" onclick="filterMovies('Romantic', this)">Romantic</button>
+        <button class="filter-btn" onclick="filterMovies('Emotional', this)">Emotional</button>
+        <button class="filter-btn" onclick="filterMovies('Sci-Fi', this)">Sci-Fi</button>
+      </div>
+
+      <div class="movie-grid">
+        <div class="movie-card" data-mood="Dreamy Sci-Fi">
+          <img src="Images/inception-wide.jpg">
+          <h3>Inception</h3>
+          <div class="meta">Sci-Fi · 8.8</div>
+          <p class="desc">A mind-bending story about dreams within dreams.</p>
+          <span class="mood-tag">Dreamy</span>
+        </div>
+
+        <div class="movie-card" data-mood="Romantic">
+          <img src="Images/lalaland-wide.jpg">
+          <h3>La La Land</h3>
+          <div class="meta">Romance · 8.0</div>
+          <p class="desc">A beautiful musical about dreams, love, and ambition.</p>
+          <span class="mood-tag">Romantic</span>
+        </div>
+
+        <div class="movie-card" data-mood="Emotional Sci-Fi">
+          <img src="Images/interstellar-wide.jpg">
+          <h3>Interstellar</h3>
+          <div class="meta">Sci-Fi · 8.7</div>
+          <p class="desc">An emotional space journey about love, time, and survival.</p>
+          <span class="mood-tag">Emotional</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function filterMovies(mood, clickedButton) {
+      const cards = document.querySelectorAll(".movie-card");
+
+      cards.forEach(function(card) {
+        const cardMood = card.getAttribute("data-mood");
+
+        if (mood === "all" || cardMood.includes(mood)) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      const buttons = document.querySelectorAll(".filter-btn");
+
+      buttons.forEach(function(button) {
+        button.classList.remove("active");
+      });
+
+      clickedButton.classList.add("active");
+    }
+  </script>
+</body>
+</html>
