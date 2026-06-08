@@ -2,10 +2,15 @@
 <html>
 <head>
   <title>Movie Pick</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     * {
       box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -21,11 +26,27 @@
       overflow-x: hidden;
     }
 
+    .cursor-glow {
+      position: fixed;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(192,132,252,0.22), transparent 60%),
+        radial-gradient(circle, rgba(245,158,11,0.12), transparent 70%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      filter: blur(12px);
+      opacity: 0.75;
+      z-index: 0;
+    }
+
     .page {
       width: 100%;
       min-height: 100vh;
       padding: 28px 56px 56px;
       position: relative;
+      z-index: 1;
     }
 
     .noise {
@@ -35,6 +56,7 @@
       opacity: 0.05;
       background-image: linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
       background-size: 4px 4px;
+      z-index: 2;
     }
 
     nav {
@@ -51,6 +73,7 @@
       border-radius: 16px;
       position: relative;
       z-index: 5;
+      animation: fadeDown 0.8s ease forwards;
     }
 
     .logo {
@@ -73,6 +96,12 @@
       padding: 10px 14px;
       border-radius: 10px;
       cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .nav-button:hover {
+      transform: translateY(-2px);
+      background: rgba(245, 193, 108, 0.18);
     }
 
     .hero {
@@ -84,6 +113,10 @@
       gap: 40px;
       align-items: center;
       position: relative;
+    }
+
+    .hero-copy {
+      animation: fadeUp 1s ease forwards;
     }
 
     .eyebrow {
@@ -133,6 +166,12 @@
       border-radius: 12px;
       font-weight: 700;
       cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 40px rgba(192,132,252,0.24);
     }
 
     .secondary-btn {
@@ -142,11 +181,18 @@
       padding: 15px 20px;
       border-radius: 12px;
       cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .secondary-btn:hover {
+      transform: translateY(-3px);
+      border-color: rgba(245,193,108,0.45);
     }
 
     .visual {
       position: relative;
       height: 520px;
+      animation: fadeIn 1.2s ease forwards;
     }
 
     .poster {
@@ -161,6 +207,7 @@
       box-shadow: 0 40px 90px rgba(0,0,0,0.72);
       border: 1px solid rgba(255,255,255,0.16);
       z-index: 2;
+      animation: floatPoster 4.5s ease-in-out infinite;
     }
 
     .poster img {
@@ -184,6 +231,7 @@
         0 0 90px rgba(192,132,252,0.22),
         inset 0 0 70px rgba(255,255,255,0.07);
       z-index: 1;
+      animation: pulseOrb 5s ease-in-out infinite;
     }
 
     .ring {
@@ -198,6 +246,7 @@
       filter: blur(0.2px);
       z-index: 3;
       box-shadow: 0 0 34px rgba(192,132,252,0.35);
+      animation: rotateRing 8s ease-in-out infinite;
     }
 
     .ticket {
@@ -212,6 +261,7 @@
       padding: 14px 16px;
       transform: rotate(-6deg);
       box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+      animation: floatTicket 5s ease-in-out infinite;
     }
 
     .ticket-title {
@@ -242,6 +292,30 @@
       color: white;
       font-size: 18px;
       margin-right: 6px;
+    }
+
+    .marquee {
+      max-width: 1120px;
+      margin: 0 auto 58px;
+      overflow: hidden;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      padding: 14px 0;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      gap: 34px;
+      animation: marqueeMove 22s linear infinite;
+      color: rgba(255,255,255,0.72);
+      letter-spacing: 2px;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .marquee span {
+      color: #f5c16c;
     }
 
     .movie-section {
@@ -280,9 +354,11 @@
       padding: 10px 14px;
       border-radius: 999px;
       cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
     }
 
     .filter-btn:hover {
+      transform: translateY(-2px);
       border-color: rgba(192,132,252,0.6);
       color: white;
     }
@@ -305,11 +381,18 @@
       border-radius: 20px;
       padding: 16px;
       backdrop-filter: blur(14px);
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      transition: transform 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    .movie-card.reveal {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .movie-card:hover {
-      transform: translateY(-6px);
+      transform: translateY(-8px);
       border-color: rgba(192,132,252,0.55);
     }
 
@@ -319,6 +402,12 @@
       object-fit: cover;
       border-radius: 14px;
       filter: grayscale(15%) saturate(90%);
+      transition: transform 0.35s ease, filter 0.35s ease;
+    }
+
+    .movie-card:hover img {
+      transform: scale(1.04);
+      filter: grayscale(0%) saturate(105%);
     }
 
     .movie-card h3 {
@@ -349,9 +438,91 @@
       font-size: 12px;
     }
 
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(28px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes floatPoster {
+      0%, 100% {
+        transform: translateY(0) rotate(3deg);
+      }
+      50% {
+        transform: translateY(-16px) rotate(1deg);
+      }
+    }
+
+    @keyframes floatTicket {
+      0%, 100% {
+        transform: translateY(0) rotate(-6deg);
+      }
+      50% {
+        transform: translateY(12px) rotate(-4deg);
+      }
+    }
+
+    @keyframes pulseOrb {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.95;
+      }
+      50% {
+        transform: scale(1.04);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rotateRing {
+      0%, 100% {
+        transform: rotate(-16deg) scale(1);
+      }
+      50% {
+        transform: rotate(-10deg) scale(1.03);
+      }
+    }
+
+    @keyframes marqueeMove {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
     @media (max-width: 850px) {
       .page {
         padding: 20px;
+      }
+
+      .cursor-glow {
+        display: none;
       }
 
       .hero {
@@ -361,10 +532,19 @@
 
       h1 {
         font-size: 52px;
+        letter-spacing: -2px;
       }
 
       .visual {
         height: 440px;
+      }
+
+      .poster {
+        right: 40px;
+      }
+
+      .ring {
+        right: -90px;
       }
 
       .movie-grid {
@@ -376,13 +556,14 @@
       }
 
       .ticket {
-        right: 180px;
+        right: 160px;
       }
     }
   </style>
 </head>
 
 <body>
+  <div class="cursor-glow" id="cursorGlow"></div>
   <div class="noise"></div>
 
   <div class="page">
@@ -397,7 +578,7 @@
     </nav>
 
     <section class="hero">
-      <div>
+      <div class="hero-copy">
         <div class="eyebrow">001 Midnight Film Club</div>
 
         <h1>
@@ -411,8 +592,8 @@
         </p>
 
         <div class="hero-actions">
-          <button class="primary-btn">Start exploring</button>
-          <button class="secondary-btn">View selected films</button>
+          <button class="primary-btn" onclick="scrollToFilms()">Start exploring</button>
+          <button class="secondary-btn" onclick="scrollToFilms()">View selected films</button>
         </div>
 
         <div class="stats">
@@ -427,7 +608,7 @@
         <div class="ring"></div>
 
         <div class="poster">
-          <img src="Images/inception-poster.jpg">
+          <img src="Images/inception-poster.jpg" alt="Inception poster">
         </div>
 
         <div class="ticket">
@@ -437,7 +618,14 @@
       </div>
     </section>
 
-    <section class="movie-section">
+    <section class="marquee">
+      <div class="marquee-track">
+        <div><span>Midnight Picks</span> · Dreamy Sci-Fi · Romantic Classics · Emotional Journeys · Visual Stories ·</div>
+        <div><span>Midnight Picks</span> · Dreamy Sci-Fi · Romantic Classics · Emotional Journeys · Visual Stories ·</div>
+      </div>
+    </section>
+
+    <section class="movie-section" id="films">
       <div class="section-header">
         <div>
           <h2>Selected films</h2>
@@ -455,7 +643,7 @@
 
       <div class="movie-grid">
         <div class="movie-card" data-mood="Dreamy Sci-Fi">
-          <img src="Images/inception-wide.jpg">
+          <img src="Images/inception-wide.jpg" alt="Inception wide image">
           <h3>Inception</h3>
           <div class="meta">Sci-Fi · 8.8</div>
           <p class="desc">A mind-bending story about dreams within dreams.</p>
@@ -463,7 +651,7 @@
         </div>
 
         <div class="movie-card" data-mood="Romantic">
-          <img src="Images/lalaland-wide.jpg">
+          <img src="Images/lalaland-wide.jpg" alt="La La Land wide image">
           <h3>La La Land</h3>
           <div class="meta">Romance · 8.0</div>
           <p class="desc">A beautiful musical about dreams, love, and ambition.</p>
@@ -471,7 +659,7 @@
         </div>
 
         <div class="movie-card" data-mood="Emotional Sci-Fi">
-          <img src="Images/interstellar-wide.jpg">
+          <img src="Images/interstellar-wide.jpg" alt="Interstellar wide image">
           <h3>Interstellar</h3>
           <div class="meta">Sci-Fi · 8.7</div>
           <p class="desc">An emotional space journey about love, time, and survival.</p>
@@ -482,6 +670,19 @@
   </div>
 
   <script>
+    const cursorGlow = document.getElementById("cursorGlow");
+
+    document.addEventListener("mousemove", function(event) {
+      cursorGlow.style.left = event.clientX + "px";
+      cursorGlow.style.top = event.clientY + "px";
+    });
+
+    function scrollToFilms() {
+      document.getElementById("films").scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+
     function filterMovies(mood, clickedButton) {
       const cards = document.querySelectorAll(".movie-card");
 
@@ -490,7 +691,11 @@
 
         if (mood === "all" || cardMood.includes(mood)) {
           card.style.display = "block";
+          setTimeout(function() {
+            card.classList.add("reveal");
+          }, 80);
         } else {
+          card.classList.remove("reveal");
           card.style.display = "none";
         }
       });
@@ -503,6 +708,22 @@
 
       clickedButton.classList.add("active");
     }
+
+    const revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal");
+        }
+      });
+    }, {
+      threshold: 0.15
+    });
+
+    const movieCards = document.querySelectorAll(".movie-card");
+
+    movieCards.forEach(function(card) {
+      revealObserver.observe(card);
+    });
   </script>
 </body>
 </html>
