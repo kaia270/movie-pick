@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Movie Pick</title>
+  <title>Mood Reel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -17,9 +17,9 @@
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background:
-        radial-gradient(circle at 72% 28%, rgba(192, 132, 252, 0.18), transparent 28%),
-        radial-gradient(circle at 18% 22%, rgba(245, 158, 11, 0.12), transparent 24%),
-        radial-gradient(circle at 45% 80%, rgba(236, 72, 153, 0.10), transparent 24%),
+        radial-gradient(circle at 18% 24%, rgba(245, 158, 11, 0.12), transparent 24%),
+        radial-gradient(circle at 78% 22%, rgba(192, 132, 252, 0.20), transparent 30%),
+        radial-gradient(circle at 48% 76%, rgba(236, 72, 153, 0.10), transparent 28%),
         #070712;
       color: white;
       min-height: 100vh;
@@ -41,14 +41,6 @@
       z-index: 0;
     }
 
-    .page {
-      width: 100%;
-      min-height: 100vh;
-      padding: 28px 56px 56px;
-      position: relative;
-      z-index: 1;
-    }
-
     .noise {
       position: fixed;
       inset: 0;
@@ -59,9 +51,17 @@
       z-index: 2;
     }
 
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      padding: 28px 56px 56px;
+      position: relative;
+      z-index: 1;
+    }
+
     nav {
       width: 100%;
-      max-width: 1120px;
+      max-width: 1160px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -104,19 +104,35 @@
       background: rgba(245, 193, 108, 0.18);
     }
 
-    .hero {
-      max-width: 1120px;
-      margin: 90px auto 70px;
-      min-height: 560px;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 40px;
-      align-items: center;
+    .screen {
+      max-width: 1160px;
+      margin: 0 auto;
+      min-height: calc(100vh - 100px);
       position: relative;
     }
 
+    .selector-screen {
+      padding-top: 70px;
+      animation: fadeUp 0.9s ease forwards;
+    }
+
+    .selector-screen.hidden {
+      display: none;
+    }
+
+    .result-screen {
+      display: none;
+      padding-top: 70px;
+      animation: fadeUp 0.9s ease forwards;
+    }
+
+    .result-screen.active {
+      display: block;
+    }
+
     .hero-copy {
-      animation: fadeUp 1s ease forwards;
+      max-width: 760px;
+      margin-bottom: 48px;
     }
 
     .eyebrow {
@@ -128,11 +144,10 @@
     }
 
     h1 {
-      font-size: 76px;
-      line-height: 0.95;
+      font-size: 78px;
+      line-height: 0.94;
       margin: 0;
       letter-spacing: -4px;
-      max-width: 720px;
     }
 
     .highlight {
@@ -146,187 +161,371 @@
 
     .hero-text {
       color: #d1d5db;
-      max-width: 520px;
+      max-width: 600px;
       line-height: 1.7;
-      margin: 24px 0 28px;
+      margin: 24px 0 0;
       font-size: 16px;
     }
 
-    .hero-actions {
-      display: flex;
-      gap: 14px;
+    .orb-stage {
+      display: grid;
+      grid-template-columns: 1fr 280px 1fr;
+      gap: 28px;
       align-items: center;
+      min-height: 500px;
+      margin-top: 20px;
     }
 
-    .primary-btn {
-      background: linear-gradient(135deg, #f59e0b, #c084fc);
-      color: #111111;
-      border: none;
-      padding: 15px 20px;
-      border-radius: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .primary-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 18px 40px rgba(192,132,252,0.24);
-    }
-
-    .secondary-btn {
-      background: rgba(255,255,255,0.05);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.14);
-      padding: 15px 20px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .secondary-btn:hover {
-      transform: translateY(-3px);
-      border-color: rgba(245,193,108,0.45);
-    }
-
-    .visual {
+    .universe {
+      min-height: 480px;
       position: relative;
-      height: 520px;
-      animation: fadeIn 1.2s ease forwards;
-    }
-
-    .poster {
-      width: 300px;
-      height: 430px;
-      border-radius: 26px;
+      border-radius: 34px;
       overflow: hidden;
-      position: absolute;
-      right: 70px;
-      top: 30px;
-      transform: rotate(3deg);
-      box-shadow: 0 40px 90px rgba(0,0,0,0.72);
-      border: 1px solid rgba(255,255,255,0.16);
-      z-index: 2;
-      animation: floatPoster 4.5s ease-in-out infinite;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.08), transparent 22%),
+        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.06), transparent 28%),
+        rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.25);
     }
 
-    .poster img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: grayscale(20%) contrast(112%) saturate(85%);
+    .universe-header {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      right: 24px;
+      z-index: 3;
+    }
+
+    .universe-kicker {
+      color: #a5b4fc;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .universe-title {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.5px;
+    }
+
+    .universe-subtitle {
+      color: #9ca3af;
+      margin: 8px 0 0;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .orb {
       position: absolute;
-      width: 330px;
-      height: 330px;
-      border-radius: 50%;
-      right: 35px;
-      top: 80px;
-      background:
-        radial-gradient(circle at 35% 35%, rgba(245, 193, 108, 0.22), transparent 24%),
-        radial-gradient(circle, #1a1024, #05040a);
-      box-shadow:
-        0 0 90px rgba(192,132,252,0.22),
-        inset 0 0 70px rgba(255,255,255,0.07);
-      z-index: 1;
-      animation: pulseOrb 5s ease-in-out infinite;
-    }
-
-    .ring {
-      position: absolute;
-      width: 480px;
-      height: 126px;
-      right: -18px;
-      top: 188px;
-      border: 2px solid rgba(245,158,11,0.65);
-      border-radius: 50%;
-      transform: rotate(-16deg);
-      filter: blur(0.2px);
-      z-index: 3;
-      box-shadow: 0 0 34px rgba(192,132,252,0.35);
-      animation: rotateRing 8s ease-in-out infinite;
-    }
-
-    .ticket {
-      position: absolute;
-      right: 260px;
-      bottom: 60px;
-      z-index: 4;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: white;
+      border-radius: 999px;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
       backdrop-filter: blur(14px);
-      border-radius: 16px;
-      padding: 14px 16px;
-      transform: rotate(-6deg);
-      box-shadow: 0 18px 45px rgba(0,0,0,0.35);
-      animation: floatTicket 5s ease-in-out infinite;
-    }
-
-    .ticket-title {
-      color: #f5c16c;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .ticket-text {
-      color: white;
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .stats {
-      display: flex;
-      gap: 24px;
-      margin-top: 44px;
-      padding-top: 22px;
-      border-top: 1px solid rgba(255,255,255,0.12);
-      color: #d1d5db;
-      font-size: 13px;
-    }
-
-    .stats strong {
-      color: white;
-      font-size: 18px;
-      margin-right: 6px;
-    }
-
-    .marquee {
-      max-width: 1120px;
-      margin: 0 auto 58px;
+      box-shadow:
+        inset 0 0 30px rgba(255,255,255,0.06),
+        0 18px 42px rgba(0,0,0,0.28);
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease,
+        opacity 0.25s ease;
+      animation: floatOrb 5s ease-in-out infinite;
       overflow: hidden;
-      border-top: 1px solid rgba(255,255,255,0.12);
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-      padding: 14px 0;
     }
 
-    .marquee-track {
-      display: flex;
-      width: max-content;
-      gap: 34px;
-      animation: marqueeMove 22s linear infinite;
-      color: rgba(255,255,255,0.72);
-      letter-spacing: 2px;
+    .orb::before {
+      content: "";
+      position: absolute;
+      inset: 8%;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 35% 28%, rgba(255,255,255,0.20), transparent 22%),
+        radial-gradient(circle at 60% 70%, rgba(255,255,255,0.08), transparent 32%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .orb span {
+      position: relative;
+      z-index: 2;
+      max-width: 82%;
       font-size: 13px;
-      text-transform: uppercase;
+      font-weight: 700;
+      line-height: 1.2;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.45);
     }
 
-    .marquee span {
+    .scene-orb {
+      background:
+        radial-gradient(circle at 30% 25%, rgba(245,193,108,0.32), transparent 26%),
+        radial-gradient(circle at 75% 70%, rgba(236,72,153,0.20), transparent 34%),
+        rgba(255,255,255,0.055);
+    }
+
+    .tone-orb {
+      background:
+        radial-gradient(circle at 32% 25%, rgba(192,132,252,0.32), transparent 28%),
+        radial-gradient(circle at 75% 70%, rgba(99,102,241,0.24), transparent 34%),
+        rgba(255,255,255,0.055);
+    }
+
+    .orb:hover {
+      transform: scale(1.09) rotate(5deg);
+      border-color: rgba(255,255,255,0.28);
+      box-shadow:
+        inset 0 0 38px rgba(255,255,255,0.09),
+        0 0 46px rgba(192,132,252,0.18),
+        0 24px 54px rgba(0,0,0,0.38);
+    }
+
+    .scene-orb.active {
+      border-color: rgba(245,193,108,0.70);
+      box-shadow:
+        inset 0 0 34px rgba(245,193,108,0.15),
+        0 0 46px rgba(245,158,11,0.32),
+        0 24px 54px rgba(0,0,0,0.38);
+    }
+
+    .tone-orb.active {
+      border-color: rgba(192,132,252,0.78);
+      box-shadow:
+        inset 0 0 34px rgba(192,132,252,0.15),
+        0 0 50px rgba(192,132,252,0.36),
+        0 24px 54px rgba(0,0,0,0.38);
+    }
+
+    .orb.small {
+      width: 108px;
+      height: 108px;
+    }
+
+    .orb.medium {
+      width: 134px;
+      height: 134px;
+    }
+
+    .orb.large {
+      width: 158px;
+      height: 158px;
+    }
+
+    .scene-1 { left: 12%; top: 28%; animation-delay: 0s; }
+    .scene-2 { left: 50%; top: 22%; animation-delay: 0.5s; }
+    .scene-3 { left: 32%; top: 48%; animation-delay: 1s; }
+    .scene-4 { left: 6%; top: 60%; animation-delay: 1.4s; }
+    .scene-5 { left: 58%; top: 56%; animation-delay: 0.8s; }
+    .scene-6 { left: 36%; top: 72%; animation-delay: 1.8s; }
+    .scene-7 { left: 68%; top: 34%; animation-delay: 2s; }
+    .scene-8 { left: 16%; top: 12%; animation-delay: 2.4s; }
+
+    .tone-1 { left: 14%; top: 24%; animation-delay: 0.2s; }
+    .tone-2 { left: 48%; top: 18%; animation-delay: 0.7s; }
+    .tone-3 { left: 30%; top: 46%; animation-delay: 1.1s; }
+    .tone-4 { left: 64%; top: 48%; animation-delay: 1.5s; }
+    .tone-5 { left: 8%; top: 62%; animation-delay: 0.9s; }
+    .tone-6 { left: 46%; top: 70%; animation-delay: 1.9s; }
+    .tone-7 { left: 66%; top: 30%; animation-delay: 2.2s; }
+    .tone-8 { left: 18%; top: 8%; animation-delay: 2.6s; }
+
+    .collision-zone {
+      height: 460px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .collision-core {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.12);
+      background:
+        radial-gradient(circle at 40% 30%, rgba(255,255,255,0.14), transparent 22%),
+        radial-gradient(circle, rgba(192,132,252,0.16), rgba(245,158,11,0.09), rgba(255,255,255,0.035));
+      backdrop-filter: blur(18px);
+      box-shadow:
+        inset 0 0 40px rgba(255,255,255,0.05),
+        0 0 70px rgba(192,132,252,0.14),
+        0 26px 80px rgba(0,0,0,0.40);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      animation: coreIdle 5s ease-in-out infinite;
+      overflow: hidden;
+    }
+
+    .collision-core::after {
+      content: "";
+      position: absolute;
+      width: 310px;
+      height: 80px;
+      border: 1px solid rgba(245,193,108,0.44);
+      border-radius: 50%;
+      transform: rotate(-18deg);
+      box-shadow: 0 0 28px rgba(192,132,252,0.26);
+    }
+
+    .collision-core.ready {
+      animation: coreReady 0.9s ease forwards;
+    }
+
+    .core-text {
+      position: relative;
+      z-index: 2;
+    }
+
+    .core-label {
       color: #f5c16c;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .core-value {
+      color: white;
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .collision-note {
+      margin-top: 18px;
+      color: #9ca3af;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .selected-route {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      color: #d1d5db;
+      text-align: center;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .selected-route strong {
+      color: white;
+    }
+
+    .result-hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 58px;
+    }
+
+    .route-card {
+      min-height: 360px;
+      border-radius: 32px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background:
+        radial-gradient(circle at 25% 24%, rgba(245,158,11,0.16), transparent 28%),
+        radial-gradient(circle at 78% 68%, rgba(192,132,252,0.18), transparent 30%),
+        rgba(255,255,255,0.045);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.28);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 34px;
+    }
+
+    .route-card::before {
+      content: "";
+      position: absolute;
+      width: 420px;
+      height: 110px;
+      border: 2px solid rgba(245,193,108,0.42);
+      border-radius: 50%;
+      transform: rotate(-12deg);
+      box-shadow: 0 0 38px rgba(192,132,252,0.28);
+    }
+
+    .route-inner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .route-kicker {
+      color: #a5b4fc;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      font-size: 12px;
+      margin-bottom: 14px;
+    }
+
+    .route-title {
+      font-size: 36px;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      margin: 0;
+    }
+
+    .route-plus {
+      color: #f5c16c;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 42px;
+      margin: 8px 0;
+    }
+
+    .route-desc {
+      color: #d1d5db;
+      line-height: 1.7;
+      margin: 22px auto 0;
+      max-width: 520px;
+    }
+
+    .back-btn {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: #d1d5db;
+      padding: 12px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 24px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(245,193,108,0.55);
+      color: white;
     }
 
     .movie-section {
-      max-width: 1120px;
-      margin: 0 auto;
+      margin-top: 34px;
     }
 
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: end;
+      gap: 18px;
       margin-bottom: 20px;
     }
 
@@ -337,36 +536,14 @@
 
     .section-header p {
       color: #9ca3af;
-      margin: 0;
+      margin: 6px 0 0;
+      line-height: 1.5;
     }
 
-    .filters {
-      display: flex;
-      gap: 10px;
-      margin: 20px 0;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.06);
-      color: #d1d5db;
-      padding: 10px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-    }
-
-    .filter-btn:hover {
-      transform: translateY(-2px);
-      border-color: rgba(192,132,252,0.6);
-      color: white;
-    }
-
-    .filter-btn.active {
-      background: linear-gradient(135deg, #f59e0b, #c084fc);
-      color: #111111;
-      border-color: transparent;
+    .result-count {
+      color: #f5c16c;
+      font-size: 14px;
+      white-space: nowrap;
     }
 
     .movie-grid {
@@ -427,15 +604,45 @@
       font-size: 14px;
     }
 
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
     .mood-tag {
       display: inline-block;
-      margin-top: 12px;
       padding: 6px 10px;
       border-radius: 999px;
       color: #e9d5ff;
       background: rgba(192,132,252,0.14);
       border: 1px solid rgba(192,132,252,0.25);
       font-size: 12px;
+    }
+
+    .tone-tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #ffe7b5;
+      background: rgba(245,158,11,0.12);
+      border: 1px solid rgba(245,158,11,0.25);
+      font-size: 12px;
+    }
+
+    .empty-state {
+      display: none;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.055);
+      color: #d1d5db;
+      line-height: 1.6;
+    }
+
+    .empty-state strong {
+      color: white;
     }
 
     @keyframes fadeDown {
@@ -460,63 +667,50 @@
       }
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    @keyframes floatPoster {
+    @keyframes floatOrb {
       0%, 100% {
-        transform: translateY(0) rotate(3deg);
+        transform: translateY(0) rotate(0deg);
       }
       50% {
-        transform: translateY(-16px) rotate(1deg);
+        transform: translateY(-12px) rotate(3deg);
       }
     }
 
-    @keyframes floatTicket {
-      0%, 100% {
-        transform: translateY(0) rotate(-6deg);
-      }
-      50% {
-        transform: translateY(12px) rotate(-4deg);
-      }
-    }
-
-    @keyframes pulseOrb {
+    @keyframes coreIdle {
       0%, 100% {
         transform: scale(1);
-        opacity: 0.95;
+        box-shadow:
+          inset 0 0 40px rgba(255,255,255,0.05),
+          0 0 70px rgba(192,132,252,0.14),
+          0 26px 80px rgba(0,0,0,0.40);
       }
       50% {
-        transform: scale(1.04);
+        transform: scale(1.03);
+        box-shadow:
+          inset 0 0 50px rgba(255,255,255,0.08),
+          0 0 90px rgba(245,158,11,0.16),
+          0 26px 80px rgba(0,0,0,0.40);
+      }
+    }
+
+    @keyframes coreReady {
+      0% {
+        transform: scale(1);
         opacity: 1;
       }
-    }
-
-    @keyframes rotateRing {
-      0%, 100% {
-        transform: rotate(-16deg) scale(1);
+      45% {
+        transform: scale(1.18);
+        box-shadow:
+          inset 0 0 60px rgba(255,255,255,0.12),
+          0 0 130px rgba(192,132,252,0.44),
+          0 0 80px rgba(245,158,11,0.32);
       }
-      50% {
-        transform: rotate(-10deg) scale(1.03);
-      }
-    }
-
-    @keyframes marqueeMove {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(-50%);
+      100% {
+        transform: scale(1.05);
       }
     }
 
-    @media (max-width: 850px) {
+    @media (max-width: 980px) {
       .page {
         padding: 20px;
       }
@@ -525,26 +719,25 @@
         display: none;
       }
 
-      .hero {
-        grid-template-columns: 1fr;
-        margin-top: 50px;
-      }
-
       h1 {
         font-size: 52px;
         letter-spacing: -2px;
       }
 
-      .visual {
-        height: 440px;
+      .orb-stage {
+        grid-template-columns: 1fr;
       }
 
-      .poster {
-        right: 40px;
+      .collision-zone {
+        height: 280px;
       }
 
-      .ring {
-        right: -90px;
+      .universe {
+        min-height: 430px;
+      }
+
+      .result-hero {
+        grid-template-columns: 1fr;
       }
 
       .movie-grid {
@@ -555,8 +748,9 @@
         display: none;
       }
 
-      .ticket {
-        right: 160px;
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
@@ -570,160 +764,371 @@
     <nav>
       <div class="logo">MOOD REEL</div>
       <div class="nav-links">
-        <span>Tonight</span>
-        <span>Moods</span>
-        <span>Watchlist</span>
+        <span>Scene Orbs</span>
+        <span>Tone Orbs</span>
+        <span>Collision</span>
       </div>
-      <button class="nav-button">Explore</button>
+      <button class="nav-button" onclick="goBackToSelector()">Start over</button>
     </nav>
 
-    <section class="hero">
-      <div class="hero-copy">
-        <div class="eyebrow">001 Midnight Film Club</div>
-
+    <main class="screen selector-screen" id="selectorScreen">
+      <section class="hero-copy">
+        <div class="eyebrow">001 Mood Collision Film Picker</div>
         <h1>
-          Curated films for
-          <span class="highlight">your next</span>
-          mood.
+          Let your
+          <span class="highlight">moods</span>
+          collide.
         </h1>
-
         <p class="hero-text">
-          A moody movie recommendation experience designed to help you choose films by feeling, story, and visual style.
+          Pick a scene from the left universe and a visual tone from the right. When the two orbs meet, Mood Reel turns the collision into a film route.
         </p>
+      </section>
 
-        <div class="hero-actions">
-          <button class="primary-btn" onclick="scrollToFilms()">Start exploring</button>
-          <button class="secondary-btn" onclick="scrollToFilms()">View selected films</button>
+      <section class="orb-stage">
+        <div class="universe">
+          <div class="universe-header">
+            <div class="universe-kicker">Axis 1</div>
+            <h2 class="universe-title">Choose the scene</h2>
+            <p class="universe-subtitle">When, where, and who you are watching with.</p>
+          </div>
+
+          <button class="orb scene-orb medium scene-1" onclick="selectScene('Weekend Party', this)"><span>Weekend Party</span></button>
+          <button class="orb scene-orb small scene-2" onclick="selectScene('Old Friends Reunion', this)"><span>Old Friends Reunion</span></button>
+          <button class="orb scene-orb large scene-3" onclick="selectScene('Date Night', this)"><span>Date Night</span></button>
+          <button class="orb scene-orb medium scene-4" onclick="selectScene('Rainy Solo Evening', this)"><span>Rainy Solo Evening</span></button>
+          <button class="orb scene-orb small scene-5" onclick="selectScene('Late Night Overthinking', this)"><span>Late Night Overthinking</span></button>
+          <button class="orb scene-orb small scene-6" onclick="selectScene('Family Cozy Time', this)"><span>Family Cozy Time</span></button>
+          <button class="orb scene-orb medium scene-7" onclick="selectScene('Healing After Work', this)"><span>Healing After Work</span></button>
+          <button class="orb scene-orb small scene-8" onclick="selectScene('Creative Recharge', this)"><span>Creative Recharge</span></button>
         </div>
 
-        <div class="stats">
-          <div><strong>9.1</strong>Top rating</div>
-          <div><strong>24</strong>Curated picks</div>
-          <div><strong>6</strong>Mood filters</div>
+        <div class="collision-zone">
+          <div>
+            <div class="collision-core" id="collisionCore">
+              <div class="core-text">
+                <div class="core-label" id="coreLabel">Waiting for collision</div>
+                <div class="core-value" id="coreValue">Choose one scene orb and one tone orb</div>
+              </div>
+            </div>
+            <p class="collision-note">
+              Once both sides are selected, the orbs will merge into a recommendation route.
+            </p>
+            <div class="selected-route" id="selectedRoute">
+              <strong>Scene:</strong> not selected<br>
+              <strong>Tone:</strong> not selected
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="visual">
-        <div class="orb"></div>
-        <div class="ring"></div>
+        <div class="universe">
+          <div class="universe-header">
+            <div class="universe-kicker">Axis 2</div>
+            <h2 class="universe-title">Choose the color</h2>
+            <p class="universe-subtitle">The color, texture, and visual energy you want tonight.</p>
+          </div>
 
-        <div class="poster">
-          <img src="Images/inception-poster.jpg" alt="Inception poster">
+          <button class="orb tone-orb medium tone-1" onclick="selectTone('Neon Purple', this)"><span>Neon Purple</span></button>
+          <button class="orb tone-orb small tone-2" onclick="selectTone('Warm Vintage', this)"><span>Warm Vintage</span></button>
+          <button class="orb tone-orb large tone-3" onclick="selectTone('Cold Blue', this)"><span>Cold Blue</span></button>
+          <button class="orb tone-orb medium tone-4" onclick="selectTone('Soft Pastel', this)"><span>Soft Pastel</span></button>
+          <button class="orb tone-orb small tone-5" onclick="selectTone('Black Gold', this)"><span>Black Gold</span></button>
+          <button class="orb tone-orb medium tone-6" onclick="selectTone('Sunset Orange', this)"><span>Sunset Orange</span></button>
+          <button class="orb tone-orb small tone-7" onclick="selectTone('Muted Green', this)"><span>Muted Green</span></button>
+          <button class="orb tone-orb small tone-8" onclick="selectTone('Silver Dream', this)"><span>Silver Dream</span></button>
         </div>
+      </section>
+    </main>
 
-        <div class="ticket">
-          <div class="ticket-title">Tonight's pick</div>
-          <div class="ticket-text">Dreamy Sci-Fi</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="marquee">
-      <div class="marquee-track">
-        <div><span>Midnight Picks</span> · Dreamy Sci-Fi · Romantic Classics · Emotional Journeys · Visual Stories ·</div>
-        <div><span>Midnight Picks</span> · Dreamy Sci-Fi · Romantic Classics · Emotional Journeys · Visual Stories ·</div>
-      </div>
-    </section>
-
-    <section class="movie-section" id="films">
-      <div class="section-header">
+    <main class="screen result-screen" id="resultScreen">
+      <section class="result-hero">
         <div>
-          <h2>Selected films</h2>
-          <p>Curated picks for tonight.</p>
-        </div>
-      </div>
-
-      <div class="filters">
-        <button class="filter-btn active" onclick="filterMovies('all', this)">All</button>
-        <button class="filter-btn" onclick="filterMovies('Dreamy', this)">Dreamy</button>
-        <button class="filter-btn" onclick="filterMovies('Romantic', this)">Romantic</button>
-        <button class="filter-btn" onclick="filterMovies('Emotional', this)">Emotional</button>
-        <button class="filter-btn" onclick="filterMovies('Sci-Fi', this)">Sci-Fi</button>
-      </div>
-
-      <div class="movie-grid">
-        <div class="movie-card" data-mood="Dreamy Sci-Fi">
-          <img src="Images/inception-wide.jpg" alt="Inception wide image">
-          <h3>Inception</h3>
-          <div class="meta">Sci-Fi · 8.8</div>
-          <p class="desc">A mind-bending story about dreams within dreams.</p>
-          <span class="mood-tag">Dreamy</span>
+          <div class="eyebrow">002 Films from your collision</div>
+          <h1>
+            Your mood route is
+            <span class="highlight">ready</span>.
+          </h1>
+          <p class="hero-text">
+            These picks are filtered by your selected scene and visual tone. Later, this logic can connect to a movie API and become a richer recommendation engine.
+          </p>
+          <button class="back-btn" onclick="goBackToSelector()">Choose another collision</button>
         </div>
 
-        <div class="movie-card" data-mood="Romantic">
-          <img src="Images/lalaland-wide.jpg" alt="La La Land wide image">
-          <h3>La La Land</h3>
-          <div class="meta">Romance · 8.0</div>
-          <p class="desc">A beautiful musical about dreams, love, and ambition.</p>
-          <span class="mood-tag">Romantic</span>
+        <div class="route-card">
+          <div class="route-inner">
+            <div class="route-kicker">Current route</div>
+            <h2 class="route-title" id="routeScene">Scene</h2>
+            <div class="route-plus">meets</div>
+            <h2 class="route-title" id="routeTone">Tone</h2>
+            <p class="route-desc" id="routeDescription">
+              Your selected mood route will appear here.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="movie-section">
+        <div class="section-header">
+          <div>
+            <h2>Matched films</h2>
+            <p id="resultDescription">Films born from this mood collision.</p>
+          </div>
+          <div class="result-count" id="resultCount">0 matched films</div>
         </div>
 
-        <div class="movie-card" data-mood="Emotional Sci-Fi">
-          <img src="Images/interstellar-wide.jpg" alt="Interstellar wide image">
-          <h3>Interstellar</h3>
-          <div class="meta">Sci-Fi · 8.7</div>
-          <p class="desc">An emotional space journey about love, time, and survival.</p>
-          <span class="mood-tag">Emotional</span>
+        <div class="empty-state" id="emptyState">
+          <strong>No exact match yet.</strong>
+          Try another collision. Later, when we add more movies or connect an API, this section will become richer.
         </div>
-      </div>
-    </section>
+
+        <div class="movie-grid" id="movieGrid">
+          <div
+            class="movie-card"
+            data-scenes="Rainy Solo Evening,Late Night Overthinking,Creative Recharge"
+            data-tones="Neon Purple,Cold Blue,Silver Dream"
+          >
+            <img src="Images/inception-wide.jpg" alt="Inception wide image">
+            <h3>Inception</h3>
+            <div class="meta">Dream logic · 8.8</div>
+            <p class="desc">A mind-bending story about dreams within dreams, perfect for a surreal late-night watch.</p>
+            <div class="tag-row">
+              <span class="mood-tag">Late Night Overthinking</span>
+              <span class="tone-tag">Neon Purple</span>
+            </div>
+          </div>
+
+          <div
+            class="movie-card"
+            data-scenes="Date Night,Creative Recharge,Healing After Work"
+            data-tones="Warm Vintage,Sunset Orange,Soft Pastel"
+          >
+            <img src="Images/lalaland-wide.jpg" alt="La La Land wide image">
+            <h3>La La Land</h3>
+            <div class="meta">Dreamy musical · 8.0</div>
+            <p class="desc">A warm, romantic film about ambition, love, and the bittersweet beauty of timing.</p>
+            <div class="tag-row">
+              <span class="mood-tag">Date Night</span>
+              <span class="tone-tag">Warm Vintage</span>
+            </div>
+          </div>
+
+          <div
+            class="movie-card"
+            data-scenes="Old Friends Reunion,Family Cozy Time,Healing After Work"
+            data-tones="Warm Vintage,Soft Pastel,Sunset Orange"
+          >
+            <img src="Images/lalaland-wide.jpg" alt="Warm reunion movie image">
+            <h3>Before Sunrise</h3>
+            <div class="meta">Conversation mood · 8.1</div>
+            <p class="desc">A soft, intimate film built around conversation, connection, and one unforgettable night.</p>
+            <div class="tag-row">
+              <span class="mood-tag">Old Friends Reunion</span>
+              <span class="tone-tag">Soft Pastel</span>
+            </div>
+          </div>
+
+          <div
+            class="movie-card"
+            data-scenes="Late Night Overthinking,Rainy Solo Evening,Healing After Work"
+            data-tones="Cold Blue,Silver Dream,Muted Green"
+          >
+            <img src="Images/interstellar-wide.jpg" alt="Interstellar wide image">
+            <h3>Interstellar</h3>
+            <div class="meta">Cosmic emotion · 8.7</div>
+            <p class="desc">An emotional space journey about love, time, survival, and the feeling of being small under the universe.</p>
+            <div class="tag-row">
+              <span class="mood-tag">Late Night Overthinking</span>
+              <span class="tone-tag">Cold Blue</span>
+            </div>
+          </div>
+
+          <div
+            class="movie-card"
+            data-scenes="Weekend Party,Old Friends Reunion,Creative Recharge"
+            data-tones="Neon Purple,Black Gold,Sunset Orange"
+          >
+            <img src="Images/inception-wide.jpg" alt="Party movie image">
+            <h3>Everything Everywhere All at Once</h3>
+            <div class="meta">Chaotic joy · 7.8</div>
+            <p class="desc">A high-energy, colorful ride for nights when you want emotion, chaos, and imagination together.</p>
+            <div class="tag-row">
+              <span class="mood-tag">Weekend Party</span>
+              <span class="tone-tag">Neon Purple</span>
+            </div>
+          </div>
+
+          <div
+            class="movie-card"
+            data-scenes="Date Night,Rainy Solo Evening,Healing After Work"
+            data-tones="Muted Green,Soft Pastel,Silver Dream"
+          >
+            <img src="Images/interstellar-wide.jpg" alt="Past Lives style image">
+            <h3>Past Lives</h3>
+            <div class="meta">Quiet longing · 7.9</div>
+            <p class="desc">A gentle, reflective film for quiet evenings, emotional memory, and almost-love stories.</p>
+            <div class="tag-row">
+              <span class="mood-tag">Rainy Solo Evening</span>
+              <span class="tone-tag">Muted Green</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
   <script>
     const cursorGlow = document.getElementById("cursorGlow");
 
     document.addEventListener("mousemove", function(event) {
-      cursorGlow.style.left = event.clientX + "px";
-      cursorGlow.style.top = event.clientY + "px";
+      if (cursorGlow) {
+        cursorGlow.style.left = event.clientX + "px";
+        cursorGlow.style.top = event.clientY + "px";
+      }
     });
 
-    function scrollToFilms() {
-      document.getElementById("films").scrollIntoView({
+    let selectedScene = "";
+    let selectedTone = "";
+
+    function selectScene(scene, clickedButton) {
+      selectedScene = scene;
+
+      const buttons = document.querySelectorAll(".scene-orb");
+      buttons.forEach(function(button) {
+        button.classList.remove("active");
+      });
+
+      clickedButton.classList.add("active");
+      updateCollisionState();
+    }
+
+    function selectTone(tone, clickedButton) {
+      selectedTone = tone;
+
+      const buttons = document.querySelectorAll(".tone-orb");
+      buttons.forEach(function(button) {
+        button.classList.remove("active");
+      });
+
+      clickedButton.classList.add("active");
+      updateCollisionState();
+    }
+
+    function updateCollisionState() {
+      const selectedRoute = document.getElementById("selectedRoute");
+      const coreLabel = document.getElementById("coreLabel");
+      const coreValue = document.getElementById("coreValue");
+      const collisionCore = document.getElementById("collisionCore");
+
+      selectedRoute.innerHTML =
+        "<strong>Scene:</strong> " + (selectedScene || "not selected") + "<br>" +
+        "<strong>Tone:</strong> " + (selectedTone || "not selected");
+
+      if (selectedScene && selectedTone) {
+        coreLabel.innerText = "Collision detected";
+        coreValue.innerText = selectedScene + " + " + selectedTone;
+        collisionCore.classList.add("ready");
+
+        setTimeout(function() {
+          showResults();
+        }, 950);
+      } else if (selectedScene || selectedTone) {
+        coreLabel.innerText = "One orb captured";
+        coreValue.innerText = "Choose the other side to complete the collision";
+        collisionCore.classList.remove("ready");
+      } else {
+        coreLabel.innerText = "Waiting for collision";
+        coreValue.innerText = "Choose one scene orb and one tone orb";
+        collisionCore.classList.remove("ready");
+      }
+    }
+
+    function showResults() {
+      const selectorScreen = document.getElementById("selectorScreen");
+      const resultScreen = document.getElementById("resultScreen");
+
+      selectorScreen.classList.add("hidden");
+      resultScreen.classList.add("active");
+
+      document.getElementById("routeScene").innerText = selectedScene;
+      document.getElementById("routeTone").innerText = selectedTone;
+      document.getElementById("routeDescription").innerText =
+        "A route created from " + selectedScene + " and " + selectedTone + ".";
+
+      updateMovieResults();
+
+      window.scrollTo({
+        top: 0,
         behavior: "smooth"
       });
     }
 
-    function filterMovies(mood, clickedButton) {
+    function updateMovieResults() {
       const cards = document.querySelectorAll(".movie-card");
+      const resultCount = document.getElementById("resultCount");
+      const emptyState = document.getElementById("emptyState");
+
+      let visibleCount = 0;
 
       cards.forEach(function(card) {
-        const cardMood = card.getAttribute("data-mood");
+        const scenes = card.getAttribute("data-scenes");
+        const tones = card.getAttribute("data-tones");
 
-        if (mood === "all" || cardMood.includes(mood)) {
+        const sceneMatch = scenes.includes(selectedScene);
+        const toneMatch = tones.includes(selectedTone);
+
+        if (sceneMatch && toneMatch) {
           card.style.display = "block";
           setTimeout(function() {
             card.classList.add("reveal");
           }, 80);
+          visibleCount++;
         } else {
           card.classList.remove("reveal");
           card.style.display = "none";
         }
       });
 
-      const buttons = document.querySelectorAll(".filter-btn");
+      resultCount.innerText = visibleCount + " matched films";
 
-      buttons.forEach(function(button) {
-        button.classList.remove("active");
-      });
-
-      clickedButton.classList.add("active");
+      if (visibleCount === 0) {
+        emptyState.style.display = "block";
+      } else {
+        emptyState.style.display = "none";
+      }
     }
 
-    const revealObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("reveal");
-        }
+    function goBackToSelector() {
+      const selectorScreen = document.getElementById("selectorScreen");
+      const resultScreen = document.getElementById("resultScreen");
+      const collisionCore = document.getElementById("collisionCore");
+
+      resultScreen.classList.remove("active");
+      selectorScreen.classList.remove("hidden");
+
+      selectedScene = "";
+      selectedTone = "";
+
+      const allOrbs = document.querySelectorAll(".orb");
+      allOrbs.forEach(function(orb) {
+        orb.classList.remove("active");
       });
-    }, {
-      threshold: 0.15
-    });
 
-    const movieCards = document.querySelectorAll(".movie-card");
+      collisionCore.classList.remove("ready");
 
-    movieCards.forEach(function(card) {
-      revealObserver.observe(card);
-    });
+      document.getElementById("coreLabel").innerText = "Waiting for collision";
+      document.getElementById("coreValue").innerText = "Choose one scene orb and one tone orb";
+      document.getElementById("selectedRoute").innerHTML =
+        "<strong>Scene:</strong> not selected<br><strong>Tone:</strong> not selected";
+
+      const cards = document.querySelectorAll(".movie-card");
+      cards.forEach(function(card) {
+        card.classList.remove("reveal");
+      });
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
   </script>
 </body>
 </html>
