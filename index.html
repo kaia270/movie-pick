@@ -66,6 +66,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 18px;
       padding: 14px 18px;
       border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.045);
@@ -80,28 +81,43 @@
       font-weight: 800;
       letter-spacing: 1px;
       color: #f5c16c;
+      white-space: nowrap;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 22px;
+    .nav-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        rgba(245,193,108,0.00),
+        rgba(245,193,108,0.22),
+        rgba(192,132,252,0.20),
+        rgba(255,255,255,0.00)
+      );
+    }
+
+    .nav-note {
       color: #d1d5db;
       font-size: 14px;
+      white-space: nowrap;
+      opacity: 0.88;
     }
 
     .nav-button {
-      border: 1px solid rgba(245, 193, 108, 0.55);
-      background: rgba(245, 193, 108, 0.10);
+      border: 1px solid rgba(245, 193, 108, 0.42);
+      background: rgba(245, 193, 108, 0.08);
       color: #ffe7b5;
       padding: 10px 14px;
-      border-radius: 10px;
+      border-radius: 999px;
       cursor: pointer;
-      transition: transform 0.2s ease, background 0.2s ease;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      white-space: nowrap;
     }
 
     .nav-button:hover {
       transform: translateY(-2px);
-      background: rgba(245, 193, 108, 0.18);
+      background: rgba(245, 193, 108, 0.16);
+      border-color: rgba(245, 193, 108, 0.62);
     }
 
     .screen {
@@ -161,7 +177,7 @@
 
     .hero-text {
       color: #d1d5db;
-      max-width: 600px;
+      max-width: 620px;
       line-height: 1.7;
       margin: 24px 0 0;
       font-size: 16px;
@@ -719,6 +735,19 @@
         display: none;
       }
 
+      nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-line {
+        display: none;
+      }
+
+      .nav-note {
+        white-space: normal;
+      }
+
       h1 {
         font-size: 52px;
         letter-spacing: -2px;
@@ -744,10 +773,6 @@
         grid-template-columns: 1fr;
       }
 
-      .nav-links {
-        display: none;
-      }
-
       .section-header {
         flex-direction: column;
         align-items: flex-start;
@@ -763,31 +788,29 @@
   <div class="page">
     <nav>
       <div class="logo">MOOD REEL</div>
-      <div class="nav-links">
-        <span>Scene Orbs</span>
-        <span>Tone Orbs</span>
-        <span>Collision</span>
-      </div>
+      <div class="nav-line"></div>
+      <div class="nav-note">Pick by mood, not genre.</div>
       <button class="nav-button" onclick="goBackToSelector()">Start over</button>
     </nav>
 
     <main class="screen selector-screen" id="selectorScreen">
       <section class="hero-copy">
-        <div class="eyebrow">001 Mood Collision Film Picker</div>
+        <div class="eyebrow">A film route by feeling</div>
         <h1>
-          Let your
-          <span class="highlight">moods</span>
-          collide.
+          Pick a
+          <span class="highlight">feeling</span>.
+          <br>
+          Find the film.
         </h1>
         <p class="hero-text">
-          Pick a scene from the left universe and a visual tone from the right. When the two orbs meet, Mood Reel turns the collision into a film route.
+          Choose one scene and one visual tone. Mood Reel blends them into a film route made for the moment.
         </p>
       </section>
 
       <section class="orb-stage">
         <div class="universe">
           <div class="universe-header">
-            <div class="universe-kicker">Axis 1</div>
+            <div class="universe-kicker">Left universe</div>
             <h2 class="universe-title">Choose the scene</h2>
             <p class="universe-subtitle">When, where, and who you are watching with.</p>
           </div>
@@ -811,7 +834,7 @@
               </div>
             </div>
             <p class="collision-note">
-              Once both sides are selected, the orbs will merge into a recommendation route.
+              Once both sides are selected, the orbs merge into a recommendation route.
             </p>
             <div class="selected-route" id="selectedRoute">
               <strong>Scene:</strong> not selected<br>
@@ -822,7 +845,7 @@
 
         <div class="universe">
           <div class="universe-header">
-            <div class="universe-kicker">Axis 2</div>
+            <div class="universe-kicker">Right universe</div>
             <h2 class="universe-title">Choose the color</h2>
             <p class="universe-subtitle">The color, texture, and visual energy you want tonight.</p>
           </div>
@@ -842,7 +865,7 @@
     <main class="screen result-screen" id="resultScreen">
       <section class="result-hero">
         <div>
-          <div class="eyebrow">002 Films from your collision</div>
+          <div class="eyebrow">Films from your collision</div>
           <h1>
             Your mood route is
             <span class="highlight">ready</span>.
